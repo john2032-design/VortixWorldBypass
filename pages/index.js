@@ -11,24 +11,9 @@ export default function Home() {
   const [apiData, setApiData] = useState(null)
   const [errorMsg, setErrorMsg] = useState('')
   const [copied, setCopied] = useState(false)
-  const [placeholderIndex, setPlaceholderIndex] = useState(0)
-  const [placeholderText, setPlaceholderText] = useState(EXAMPLE_URLS[0])
-  const [animKey, setAnimKey] = useState(0)
   const widgetRef = useRef(null)
   const widgetIdRef = useRef(null)
   const tokenRef = useRef('')
-
-  useEffect(() => {
-    const iv = setInterval(() => {
-      setPlaceholderIndex(i => {
-        const n = (i + 1) % EXAMPLE_URLS.length
-        setPlaceholderText(EXAMPLE_URLS[n])
-        setAnimKey(k => k + 1)
-        return n
-      })
-    }, 2200)
-    return () => clearInterval(iv)
-  }, [])
 
   useEffect(() => {
     const sitekey = process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY || ''
@@ -158,7 +143,7 @@ export default function Home() {
         <div className="card">
           <h2>Paste a supported link to bypass</h2>
           <form onSubmit={handleSubmit} className="form">
-            <div className={`input-wrap ${input ? 'has-value' : ''}`}>
+            <div className="input-wrap">
               <input
                 aria-label="URL to bypass"
                 className="input"
@@ -168,7 +153,6 @@ export default function Home() {
                 disabled={loading}
                 inputMode="url"
               />
-              <div key={animKey} className="placeholder-fake">{placeholderText}</div>
             </div>
             <div className="hcaptcha-wrap" ref={widgetRef}></div>
             <div className="controls">
