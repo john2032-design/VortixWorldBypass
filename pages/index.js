@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 import Header from '../components/Header'
 import ResultBox from '../components/ResultBox'
-import { EXAMPLE_URLS, isAllowedUrlString, fetchBypass, copyText } from '../lib/api'
+import { EXAMPLE_URLS, isAllowedUrlString, copyText } from '../lib/api'
+
+const API_PROXY = '/api/proxy?url='
+
 export default function Home() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -11,7 +14,10 @@ export default function Home() {
   const [placeholderIndex, setPlaceholderIndex] = useState(0)
   const [placeholderText, setPlaceholderText] = useState(EXAMPLE_URLS[0])
   const [animKey, setAnimKey] = useState(0)
-  const inputRef = useRef(null)
+  const widgetRef = useRef(null)
+  const widgetIdRef = useRef(null)
+  const tokenRef = useRef('')
+
   useEffect(() => {
     const iv = setInterval(() => {
       setPlaceholderIndex(i => {
@@ -23,6 +29,61 @@ export default function Home() {
     }, 2200)
     return () => clearInterval(iv)
   }, [])
+
+  useEffect(() => {
+    const sitekey = process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY || ''
+    if (!sitekey) return
+    const load = () => {
+      if (window.hcaptcha && widgetRef.current && !widgetIdRef.current) {
+        widgetIdRef.current = window.hcaptcha.render(widgetRef.current, {
+          sitekey,
+          size: 'normal',
+          callback: (token) => { tokenRef.current = token },
+          'expired-callback': () => { tokenRef.current = '' },
+          'error-callback': () => { tokenRef.current = '' }
+        })
+      }
+    }
+    if (!window.hcaptcha) {
+      const s = document.createElement('script')
+      s.src = 'https://hcaptcha.com/1/api.js?render=explicit'
+      s.async = true
+      s.defer = true
+      s.onload = load
+      document.head.appendChild(s)
+    } else {
+      load()
+    }
+  }, [])
+
+  async function doBypassRequest(urlToBypass) {
+    setErrorMsg('')
+    setApiData(null)
+    try {
+      const headers = { 'Accept': 'application/json' }
+      const token = tokenRef.current || ''
+      if (token) headers['x-hcaptcha-token'] = token
+      const res = await fetch(API_PROXY + encodeURIComponent(urlToBypass), {
+        method: 'GET',
+        headers,
+        credentials: 'include'
+      })
+      const json = await res.json().catch(() => null)
+      if (!json) {
+        setErrorMsg('Invalid response from API.')
+        return
+      }
+      setApiData(json)
+    } catch (err) {
+      setErrorMsg('Network error or API unreachable.')
+    } finally {
+      tokenRef.current = ''
+      if (widgetIdRef.current && window.hcaptcha) {
+        try { window.hcaptcha.reset(widgetIdRef.current) } catch {}
+      }
+    }
+  }
+
   async function handleSubmit(e) {
     e?.preventDefault()
     setCopied(false)
@@ -39,19 +100,34 @@ export default function Home() {
     }
     setLoading(true)
     try {
-      const json = await fetchBypass(trimmed)
-      if (!json) {
-        setErrorMsg('Invalid response from API.')
-        setLoading(false)
-        return
+      const sitekey = process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY || ''
+      if (sitekey && widgetIdRef.current && window.hcaptcha) {
+        if (!tokenRef.current) {
+          try { window.hcaptcha.execute(widgetIdRef.current) } catch {}
+          const tok = await new Promise((resolve) => {
+            let waited = 0
+            const poll = () => {
+              const t = tokenRef.current
+              if (t) return resolve(t)
+              waited += 150
+              if (waited > 20000) return resolve('')
+              setTimeout(poll, 150)
+            }
+            poll()
+          })
+          if (!tok) {
+            setErrorMsg('Please complete the captcha')
+            setLoading(false)
+            return
+          }
+        }
       }
-      setApiData(json)
-    } catch {
-      setErrorMsg('Network error or API unreachable.')
+      await doBypassRequest(trimmed)
     } finally {
       setLoading(false)
     }
   }
+
   async function handleCopy() {
     if (!apiData) return
     const ok = await copyText(String(apiData.result ?? ''))
@@ -62,6 +138,7 @@ export default function Home() {
       setErrorMsg('Copy failed. Try manual copy.')
     }
   }
+
   function openResult() {
     if (!apiData) return
     const r = String(apiData.result ?? '')
@@ -72,8 +149,10 @@ export default function Home() {
       window.location.href = r
     }
   }
+
   return (
     <main className="page">
+      <div style={{position:'absolute', left:12, top:12, zIndex:2}} ref={widgetRef}></div>
       <Header />
       <section className="hero">
         <div className="card">
@@ -81,7 +160,6 @@ export default function Home() {
           <form onSubmit={handleSubmit} className="form">
             <div className="input-wrap">
               <input
-                ref={inputRef}
                 aria-label="URL to bypass"
                 className="input"
                 value={input}
@@ -105,8 +183,7 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <footer className="footer">
-      </footer>
+      <footer className="footer"></footer>
     </main>
   )
 }
