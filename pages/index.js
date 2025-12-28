@@ -42,6 +42,7 @@ export default function Home() {
           'expired-callback': () => { tokenRef.current = '' },
           'error-callback': () => { tokenRef.current = '' }
         })
+        window.__vortix_hcaptcha_widget = widgetIdRef.current
       }
     }
     if (!window.hcaptcha) {
@@ -152,13 +153,12 @@ export default function Home() {
 
   return (
     <main className="page">
-      <div style={{position:'absolute', left:12, top:12, zIndex:2}} ref={widgetRef}></div>
       <Header />
       <section className="hero">
         <div className="card">
           <h2>Paste a supported link to bypass</h2>
           <form onSubmit={handleSubmit} className="form">
-            <div className="input-wrap">
+            <div className={`input-wrap ${input ? 'has-value' : ''}`}>
               <input
                 aria-label="URL to bypass"
                 className="input"
@@ -170,6 +170,7 @@ export default function Home() {
               />
               <div key={animKey} className="placeholder-fake">{placeholderText}</div>
             </div>
+            <div className="hcaptcha-wrap" ref={widgetRef}></div>
             <div className="controls">
               <button type="submit" className="btn" disabled={loading}>
                 {loading ? <span className="spinner" aria-hidden="true"></span> : 'Bypass'}
