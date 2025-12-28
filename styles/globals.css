@@ -74,27 +74,6 @@ body{
   position:relative;
   z-index:2;
 }
-.placeholder-fake{
-  position:absolute;
-  left:16px;
-  top:50%;
-  transform:translateY(-50%);
-  pointer-events:none;
-  opacity:0.6;
-  color:rgba(255,255,255,0.45);
-  transition:opacity 0.35s ease, transform 0.35s ease;
-  z-index:1;
-  font-size:15px;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.input:focus + .placeholder-fake,
-.input-wrap.has-value .placeholder-fake {
-  opacity: 0;
-  transform: translateY(-80%);
-  pointer-events: none;
-}
 .hcaptcha-wrap {
   margin-top: 10px;
   z-index: 1;
