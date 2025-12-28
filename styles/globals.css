@@ -89,6 +89,16 @@ body{
   overflow:hidden;
   text-overflow:ellipsis;
 }
+.input:focus + .placeholder-fake,
+.input-wrap.has-value .placeholder-fake {
+  opacity: 0;
+  transform: translateY(-80%);
+  pointer-events: none;
+}
+.hcaptcha-wrap {
+  margin-top: 10px;
+  z-index: 1;
+}
 .controls{display:flex;gap:12px;align-items:center;justify-content:flex-start}
 .btn{
   background: linear-gradient(90deg, var(--accent-2), var(--bg-right));
