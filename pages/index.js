@@ -11,7 +11,6 @@ export default function Home() {
   const [placeholderIndex, setPlaceholderIndex] = useState(0)
   const [placeholderText, setPlaceholderText] = useState(EXAMPLE_URLS[0])
   const [animKey, setAnimKey] = useState(0)
-  const [devtoolsOpen, setDevtoolsOpen] = useState(false)
   const inputRef = useRef(null)
   useEffect(() => {
     const iv = setInterval(() => {
@@ -23,29 +22,6 @@ export default function Home() {
       })
     }, 2200)
     return () => clearInterval(iv)
-  }, [])
-  useEffect(() => {
-    function onKey(e) {
-      if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && ['I','J','C'].includes(e.key.toUpperCase()))) {
-        setDevtoolsOpen(true)
-      }
-    }
-    function onContext(e) {
-      e.preventDefault()
-    }
-    window.addEventListener('keydown', onKey)
-    window.addEventListener('contextmenu', onContext)
-    const detect = setInterval(() => {
-      const threshold = 160
-      const widthDiff = window.outerWidth - window.innerWidth
-      const heightDiff = window.outerHeight - window.innerHeight
-      if (widthDiff > threshold || heightDiff > threshold) setDevtoolsOpen(true)
-    }, 800)
-    return () => {
-      window.removeEventListener('keydown', onKey)
-      window.removeEventListener('contextmenu', onContext)
-      clearInterval(detect)
-    }
   }, [])
   async function handleSubmit(e) {
     e?.preventDefault()
@@ -98,14 +74,6 @@ export default function Home() {
   }
   return (
     <main className="page">
-      {devtoolsOpen && (
-        <div className="devtools-overlay">
-          <div className="devtools-box">
-            <h2>Access Blocked</h2>
-            <p>DevTools detected. Reload the page without DevTools to continue.</p>
-          </div>
-        </div>
-      )}
       <Header />
       <section className="hero">
         <div className="card">
@@ -119,13 +87,13 @@ export default function Home() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder=""
-                disabled={loading || devtoolsOpen}
+                disabled={loading}
                 inputMode="url"
               />
               <div key={animKey} className="placeholder-fake">{placeholderText}</div>
             </div>
             <div className="controls">
-              <button type="submit" className="btn" disabled={loading || devtoolsOpen}>
+              <button type="submit" className="btn" disabled={loading}>
                 {loading ? <span className="spinner" aria-hidden="true"></span> : 'Bypass'}
               </button>
             </div>
@@ -138,9 +106,6 @@ export default function Home() {
         </div>
       </section>
       <footer className="footer">
-        <div className="container">
-          <span>API: <code>{'https://site-dusky-chi.vercel.app/bypass?url={url}'}</code></span>
-        </div>
       </footer>
     </main>
   )
