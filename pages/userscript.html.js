@@ -36,9 +36,7 @@ export default function UserscriptPage() {
     if (!window.hcaptcha) return
     window.hcaptcha.render('hcaptcha-box', {
       sitekey: HCAPTCHA_SITEKEY,
-      callback: (token) => {
-        attemptResolve(target, token)
-      }
+      callback: (token) => attemptResolve(target, token)
     })
   }
 
@@ -86,7 +84,7 @@ export default function UserscriptPage() {
 
   return (
     <main className="us-root">
-      <div className="us-card">
+      <div className="us-center">
         <div className="us-logo">★</div>
         <h1 className="us-title">VortixWorld</h1>
         <p className="us-msg">{message}</p>
@@ -94,7 +92,7 @@ export default function UserscriptPage() {
         {status === 'loading' && <div className="us-spinner" />}
 
         {status === 'captcha' && (
-          <div className="us-captcha-wrap">
+          <div className="us-captcha">
             <div id="hcaptcha-box" />
           </div>
         )}
@@ -112,63 +110,55 @@ export default function UserscriptPage() {
           display:flex;
           align-items:center;
           justify-content:center;
-          padding:20px;
-          background:linear-gradient(135deg,#04020a,#0f122a,#2f36c9);
+          padding:24px;
+          background:linear-gradient(135deg,#060414,#1b1f5a,#4b52ff);
           font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial;
-          color:#eef2ff;
-        }
-        .us-card{
-          width:100%;
-          max-width:420px;
-          padding:28px 22px 30px;
-          border-radius:20px;
-          background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02));
-          box-shadow:0 30px 80px rgba(0,0,0,.55);
-          border:1px solid rgba(255,255,255,.08);
+          color:#fff;
           text-align:center;
         }
+        .us-center{
+          max-width:420px;
+          width:100%;
+        }
         .us-logo{
-          width:72px;
-          height:72px;
-          margin:0 auto 14px;
-          border-radius:18px;
+          width:80px;
+          height:80px;
+          margin:0 auto 16px;
+          border-radius:22px;
           display:flex;
           align-items:center;
           justify-content:center;
-          font-size:34px;
-          background:linear-gradient(135deg,#3b2be8,#7f8aff);
-          box-shadow:0 10px 30px rgba(59,43,232,.5);
+          font-size:36px;
+          background:linear-gradient(135deg,#5b5cff,#8b8fff);
+          box-shadow:0 10px 40px rgba(91,92,255,.55);
         }
         .us-title{
           margin:0;
-          font-size:22px;
+          font-size:24px;
           font-weight:800;
           letter-spacing:.4px;
         }
         .us-msg{
-          margin:10px 0 22px;
-          color:rgba(255,255,255,.85);
-          font-size:14.5px;
+          margin:12px 0 26px;
+          font-size:15px;
+          opacity:.9;
         }
         .us-spinner{
-          width:52px;
-          height:52px;
-          margin:22px auto 0;
+          width:54px;
+          height:54px;
+          margin:24px auto 0;
           border-radius:50%;
-          border:5px solid rgba(255,255,255,.15);
+          border:5px solid rgba(255,255,255,.2);
           border-top-color:#fff;
           animation:spin .9s linear infinite;
         }
-        .us-captcha-wrap{
-          margin-top:16px;
+        .us-captcha{
           display:flex;
           justify-content:center;
+          margin-top:10px;
         }
         .us-error{
-          margin-top:16px;
-          padding:10px 12px;
-          border-radius:10px;
-          background:rgba(255,77,109,.1);
+          margin-top:18px;
           color:#ff6b7f;
           font-weight:700;
           font-size:14px;
@@ -177,12 +167,7 @@ export default function UserscriptPage() {
           to{transform:rotate(360deg)}
         }
         @media (max-width:420px){
-          .us-card{
-            padding:24px 18px;
-          }
-          .us-title{
-            font-size:20px;
-          }
+          .us-title{font-size:22px}
         }
       `}</style>
     </main>
