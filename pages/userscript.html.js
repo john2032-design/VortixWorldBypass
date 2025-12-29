@@ -15,7 +15,7 @@ export default function UserscriptPage() {
     if (!router.isReady) return
     const params = new URLSearchParams(window.location.search)
     const target = params.get('url') || ''
-    const hcaptcha = params.get('hcaptcha') || params.get('hc') || ''
+    const hcaptcha = params.get('hcaptcha') || params.get('hc') || params.get('h-captcha-response') || ''
     const incomingRedirect = params.get('redirect') || ''
 
     if (incomingRedirect) {
@@ -103,7 +103,7 @@ export default function UserscriptPage() {
     setError('')
     const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '')
     const target = params.get('url') || ''
-    const hcaptcha = params.get('hcaptcha') || params.get('hc') || ''
+    const hcaptcha = params.get('hcaptcha') || params.get('hc') || params.get('h-captcha-response') || ''
     if (!target) {
       setStatus('error')
       setMessage('Missing url parameter')
@@ -140,15 +140,15 @@ export default function UserscriptPage() {
   }
 
   return (
-    <main style={{ height: '100vh', margin: 0, padding: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(180deg,#050213 0%,#0b0a1a 40%,#1a1b3a 100%)', color: '#fff', fontFamily: 'Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif' }}>
-      <div style={{ width: 'min(840px,96%)', borderRadius: 16, padding: '28px', background: 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))', boxShadow: '0 30px 80px rgba(6,6,10,0.6)', textAlign: 'center' }}>
+    <main style={{ minHeight: '100vh', margin: 0, padding: 20, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'linear-gradient(180deg,#050213 0%,#0b0a1a 40%,#1a1b3a 100%)', color: '#fff', fontFamily: 'Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif' }}>
+      <div style={{ width: 'min(840px,96%)', borderRadius: 16, padding: '20px', background: 'linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))', boxShadow: '0 30px 80px rgba(6,6,10,0.6)', textAlign: 'center', maxWidth: 840 }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
           <div style={{ width: 96, height: 96, borderRadius: 18, background: 'linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.12))', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 36px rgba(0,0,0,0.6)' }}>
             <svg width="48" height="48" viewBox="0 0 24 24" fill="none"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" fill="#fff" opacity="0.96" /></svg>
           </div>
-          <h1 style={{ margin: 0, fontSize: 24, fontWeight: 800 }}>Resolving link…</h1>
+          <h1 style={{ margin: 0, fontSize: 'clamp(18px, 3vw, 24px)', fontWeight: 800 }}>Resolving link…</h1>
           <p style={{ margin: 0, color: 'rgba(255,255,255,0.9)' }}>{message}</p>
-          <div style={{ marginTop: 22, width: '100%', maxWidth: 520 }}>
+          <div style={{ marginTop: 18, width: '100%', maxWidth: 520 }}>
             <div style={{ height: 10, borderRadius: 999, background: 'linear-gradient(90deg,#000 0%,#0f1b4f 40%,#1e2be8 100%)', boxShadow: 'inset 0 -2px 12px rgba(0,0,0,0.6)' }} />
           </div>
           <div style={{ marginTop: 18 }}>
