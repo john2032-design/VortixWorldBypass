@@ -67,7 +67,7 @@ export default function UserscriptPage() {
     doFetch()
   }, [router.isReady])
 
-  const params = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '')
+  const params = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams('')
   const incomingRedirect = params.get('redirect') || ''
 
   if (incomingRedirect) {
