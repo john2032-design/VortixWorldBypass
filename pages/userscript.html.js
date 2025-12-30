@@ -85,11 +85,11 @@ export default function UserscriptPage() {
   return (
     <main className="us-root">
       <div className="us-center">
-        <div className="us-logo">★</div>
+        <div className="us-logo" aria-hidden>★</div>
         <h1 className="us-title">VortixWorld</h1>
-        <p className="us-msg">{message}</p>
+        <p className="us-msg" id="us-message">{message}</p>
 
-        {status === 'loading' && <div className="us-spinner" />}
+        {status === 'loading' && <div className="us-spinner" aria-hidden />}
 
         {status === 'captcha' && (
           <div className="us-captcha">
@@ -97,67 +97,90 @@ export default function UserscriptPage() {
           </div>
         )}
 
-        {status === 'error' && <div className="us-error">{error}</div>}
+        {status === 'error' && <div className="us-error" role="alert">{error}</div>}
       </div>
 
       <style>{`
         html,body,#__next{
           height:100%;
           margin:0;
+          padding:0;
+          background-color:#071028;
+          background-image:none;
+          overflow-x:hidden;
         }
         .us-root{
           min-height:100vh;
+          width:100vw;
           display:flex;
           align-items:center;
           justify-content:center;
-          padding:24px;
-          /* solid background (no gradient / no extra boxes) */
-          background: #0b0f2a;
-          font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial;
-          color:#fff;
+          padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
+          background-color:#071028;
+          background-image:none;
+          font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+          color:#ffffff;
           text-align:center;
+          box-sizing:border-box;
+          overflow-x:hidden;
         }
         .us-center{
-          max-width:420px;
           width:100%;
+          max-width:520px;
+          display:flex;
+          flex-direction:column;
+          align-items:center;
+          gap:12px;
+          padding:18px;
+          box-sizing:border-box;
+          background-color:transparent;
         }
-        /* simplified logo: no box, no gradient, no shadow */
         .us-logo{
-          margin:0 auto 16px;
-          display:block;
-          font-size:48px;
-          line-height:1;
-          background:none;
-          box-shadow:none;
-          border-radius:0;
+          width:64px;
+          height:64px;
+          display:flex;
+          align-items:center;
+          justify-content:center;
+          font-size:34px;
+          background:transparent;
+          color:#ffffff;
+          border-radius:8px;
+          margin:0;
         }
         .us-title{
           margin:0;
-          font-size:24px;
+          font-size:22px;
           font-weight:800;
-          letter-spacing:.4px;
+          letter-spacing:0.3px;
         }
         .us-msg{
-          margin:12px 0 26px;
+          margin:0;
           font-size:15px;
-          opacity:.9;
+          opacity:0.95;
+          line-height:1.3;
         }
         .us-spinner{
-          width:54px;
-          height:54px;
-          margin:24px auto 0;
+          width:46px;
+          height:46px;
+          margin-top:6px;
           border-radius:50%;
-          border:5px solid rgba(255,255,255,.2);
-          border-top-color:#fff;
+          border:4px solid rgba(255,255,255,0.18);
+          border-top-color:#ffffff;
           animation:spin .9s linear infinite;
         }
         .us-captcha{
+          width:100%;
           display:flex;
           justify-content:center;
-          margin-top:10px;
+          margin-top:8px;
+        }
+        #hcaptcha-box{
+          width:100%;
+          max-width:420px;
+          box-sizing:border-box;
         }
         .us-error{
-          margin-top:18px;
+          margin-top:8px;
           color:#ff6b7f;
           font-weight:700;
           font-size:14px;
@@ -166,7 +189,15 @@ export default function UserscriptPage() {
           to{transform:rotate(360deg)}
         }
         @media (max-width:420px){
-          .us-title{font-size:22px}
+          .us-title{font-size:20px}
+          .us-logo{width:56px;height:56px;font-size:30px}
+          .us-spinner{width:40px;height:40px;border-width:3px}
+          .us-center{padding:16px}
+        }
+        @media (min-width:900px){
+          .us-root{padding:40px}
+          .us-center{max-width:640px;padding:28px}
+          .us-title{font-size:26px}
         }
       `}</style>
     </main>
