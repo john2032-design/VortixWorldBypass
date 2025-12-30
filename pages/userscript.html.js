@@ -209,19 +209,19 @@ export default function UserscriptPage() {
           background-color:transparent;
         }
         .us-logo{
-          width:80px;
-          height:80px;
+          width:140px;
+          height:140px;
           display:flex;
           align-items:center;
           justify-content:center;
           margin:0;
         }
         .us-logo-img{
-          width:64px;
-          height:64px;
+          width:120px;
+          height:120px;
           object-fit:contain;
           display:block;
-          border-radius:8px;
+          border-radius:12px;
           image-rendering:auto;
         }
         .us-title{
@@ -306,8 +306,8 @@ export default function UserscriptPage() {
         }
         @media (max-width:420px){
           .us-title{font-size:20px}
-          .us-logo{width:72px;height:72px}
-          .us-logo-img{width:56px;height:56px}
+          .us-logo{width:112px;height:112px}
+          .us-logo-img{width:96px;height:96px}
           .us-spinner{width:40px;height:40px;border-width:3px}
           .us-center{padding:16px}
           .us-result{flex-direction:column;align-items:stretch}
@@ -317,6 +317,8 @@ export default function UserscriptPage() {
           .us-root{padding:40px}
           .us-center{max-width:640px;padding:28px}
           .us-title{font-size:26px}
+          .us-logo{width:160px;height:160px}
+          .us-logo-img{width:136px;height:136px}
         }
       `}</style>
     </main>
