@@ -111,7 +111,8 @@ export default function UserscriptPage() {
           align-items:center;
           justify-content:center;
           padding:24px;
-          background:linear-gradient(135deg,#060414,#1b1f5a,#4b52ff);
+          /* solid background (no gradient / no extra boxes) */
+          background: #0b0f2a;
           font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Arial;
           color:#fff;
           text-align:center;
@@ -120,17 +121,15 @@ export default function UserscriptPage() {
           max-width:420px;
           width:100%;
         }
+        /* simplified logo: no box, no gradient, no shadow */
         .us-logo{
-          width:80px;
-          height:80px;
           margin:0 auto 16px;
-          border-radius:22px;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          font-size:36px;
-          background:linear-gradient(135deg,#5b5cff,#8b8fff);
-          box-shadow:0 10px 40px rgba(91,92,255,.55);
+          display:block;
+          font-size:48px;
+          line-height:1;
+          background:none;
+          box-shadow:none;
+          border-radius:0;
         }
         .us-title{
           margin:0;
