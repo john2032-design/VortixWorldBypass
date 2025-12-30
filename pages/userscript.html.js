@@ -10,6 +10,8 @@ export default function UserscriptPage() {
   const [message, setMessage] = useState('Preparing bypass…')
   const [error, setError] = useState('')
   const [needsCaptcha, setNeedsCaptcha] = useState(false)
+  const [resultText, setResultText] = useState('')
+  const [copied, setCopied] = useState(false)
 
   useEffect(() => {
     if (!router.isReady) return
@@ -40,10 +42,50 @@ export default function UserscriptPage() {
     })
   }
 
+  function isValidUrl(str) {
+    try {
+      const u = new URL(String(str))
+      return u.protocol === 'http:' || u.protocol === 'https:'
+    } catch (e) {
+      return false
+    }
+  }
+
+  function copyToClipboard(text) {
+    if (!text) return
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        setCopied(true)
+        setTimeout(() => setCopied(false), 1500)
+      }).catch(() => {
+        fallbackCopy(text)
+      })
+    } else {
+      fallbackCopy(text)
+    }
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.style.position = 'fixed'
+    ta.style.left = '-9999px'
+    document.body.appendChild(ta)
+    ta.select()
+    try {
+      document.execCommand('copy')
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    } catch (e) {
+    }
+    document.body.removeChild(ta)
+  }
+
   function attemptResolve(target, token) {
     setStatus('loading')
     setMessage('Resolving link…')
     setError('')
+    setResultText('')
     const headers = { Accept: 'application/json' }
     if (token) headers['x-hcaptcha-token'] = token
     fetch(API_PROXY + encodeURIComponent(target), {
@@ -59,11 +101,18 @@ export default function UserscriptPage() {
           return
         }
         if (json.status === 'success' && json.result) {
-          setMessage('Redirecting…')
-          setTimeout(() => {
-            window.location.href = json.result
-          }, 400)
-          return
+          if (isValidUrl(json.result)) {
+            setMessage('Redirecting…')
+            setTimeout(() => {
+              window.location.href = json.result
+            }, 400)
+            return
+          } else {
+            setResultText(String(json.result))
+            setStatus('result')
+            setMessage('Result')
+            return
+          }
         }
         if (json.result && String(json.result).toLowerCase().includes('hcaptcha')) {
           setNeedsCaptcha(true)
@@ -71,6 +120,19 @@ export default function UserscriptPage() {
           setMessage('Complete captcha to continue')
           loadHCaptcha()
           setTimeout(() => renderHCaptcha(target), 300)
+          return
+        }
+        if (json.result && isValidUrl(json.result)) {
+          setMessage('Redirecting…')
+          setTimeout(() => {
+            window.location.href = json.result
+          }, 400)
+          return
+        }
+        if (json.result) {
+          setResultText(String(json.result))
+          setStatus('result')
+          setMessage('Result')
           return
         }
         setStatus('error')
@@ -97,6 +159,15 @@ export default function UserscriptPage() {
           </div>
         )}
 
+        {status === 'result' && (
+          <div className="us-result" role="region" aria-label="Result">
+            <pre className="us-result-text" id="result-text">{resultText}</pre>
+            <button className="us-copy-btn" onClick={() => copyToClipboard(resultText)} aria-label="Copy result">
+              {copied ? 'Copied' : 'Copy'}
+            </button>
+          </div>
+        )}
+
         {status === 'error' && <div className="us-error" role="alert">{error}</div>}
       </div>
 
@@ -117,7 +188,6 @@ export default function UserscriptPage() {
           justify-content:center;
           padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
           background-color:#071028;
-          background-image:none;
           font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
           color:#ffffff;
           text-align:center;
@@ -177,8 +247,47 @@ export default function UserscriptPage() {
         #hcaptcha-box{
           width:100%;
           max-width:420px;
-          box-sizing:border-box;
         }
+        .us-result{
+          width:100%;
+          margin-top:12px;
+          display:flex;
+          gap:10px;
+          align-items:center;
+          justify-content:space-between;
+          background:rgba(255,255,255,0.03);
+          border:1px solid rgba(255,255,255,0.04);
+          padding:12px;
+          border-radius:8px;
+          box-sizing:border-box;
+          backdrop-filter:blur(6px);
+        }
+        .us-result-text{
+          margin:0;
+          padding:0;
+          font-size:14px;
+          color:#e6eef8;
+          text-align:left;
+          white-space:pre-wrap;
+          word-break:break-word;
+          flex:1 1 auto;
+          background:transparent;
+          border:0;
+        }
+        .us-copy-btn{
+          margin-left:12px;
+          flex:0 0 auto;
+          padding:8px 12px;
+          font-size:14px;
+          font-weight:700;
+          background:#0f63ff;
+          color:#fff;
+          border-radius:8px;
+          border:0;
+          cursor:pointer;
+          min-width:72px;
+        }
+        .us-copy-btn:active{transform:scale(.98)}
         .us-error{
           margin-top:8px;
           color:#ff6b7f;
@@ -193,6 +302,8 @@ export default function UserscriptPage() {
           .us-logo{width:56px;height:56px;font-size:30px}
           .us-spinner{width:40px;height:40px;border-width:3px}
           .us-center{padding:16px}
+          .us-result{flex-direction:column;align-items:stretch}
+          .us-copy-btn{width:100%;margin-left:0;margin-top:8px}
         }
         @media (min-width:900px){
           .us-root{padding:40px}
