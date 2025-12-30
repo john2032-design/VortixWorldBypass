@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 const API_PROXY = '/api/proxy?url='
 const HCAPTCHA_SITEKEY = process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY
+const LOGO_SRC = 'https://i.ibb.co/p6Qjk6gP/BFB1896-C-9-FA4-4429-881-A-38074322-DFCB.png'
 
 export default function UserscriptPage() {
   const router = useRouter()
@@ -147,7 +148,9 @@ export default function UserscriptPage() {
   return (
     <main className="us-root">
       <div className="us-center">
-        <div className="us-logo" aria-hidden>★</div>
+        <div className="us-logo" aria-hidden>
+          <img src={LOGO_SRC} alt="VortixWorld logo" className="us-logo-img" />
+        </div>
         <h1 className="us-title">VortixWorld</h1>
         <p className="us-msg" id="us-message">{message}</p>
 
@@ -206,16 +209,20 @@ export default function UserscriptPage() {
           background-color:transparent;
         }
         .us-logo{
-          width:64px;
-          height:64px;
+          width:80px;
+          height:80px;
           display:flex;
           align-items:center;
           justify-content:center;
-          font-size:34px;
-          background:transparent;
-          color:#ffffff;
-          border-radius:8px;
           margin:0;
+        }
+        .us-logo-img{
+          width:64px;
+          height:64px;
+          object-fit:contain;
+          display:block;
+          border-radius:8px;
+          image-rendering:auto;
         }
         .us-title{
           margin:0;
@@ -299,7 +306,8 @@ export default function UserscriptPage() {
         }
         @media (max-width:420px){
           .us-title{font-size:20px}
-          .us-logo{width:56px;height:56px;font-size:30px}
+          .us-logo{width:72px;height:72px}
+          .us-logo-img{width:56px;height:56px}
           .us-spinner{width:40px;height:40px;border-width:3px}
           .us-center{padding:16px}
           .us-result{flex-direction:column;align-items:stretch}
