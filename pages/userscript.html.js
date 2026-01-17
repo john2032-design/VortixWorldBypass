@@ -8,7 +8,7 @@ const LOGO_SRC = 'https://i.ibb.co/p6Qjk6gP/BFB1896-C-9-FA4-4429-881-A-38074322-
 export default function UserscriptPage() {
   const router = useRouter()
   const [status, setStatus] = useState('init')
-  const [message, setMessage] = useState('Preparing bypass…')
+  const [message, setMessage] = useState('Initializing...')
   const [error, setError] = useState('')
   const [needsCaptcha, setNeedsCaptcha] = useState(false)
   const [resultText, setResultText] = useState('')
@@ -21,6 +21,7 @@ export default function UserscriptPage() {
     if (!target) {
       setStatus('error')
       setError('Missing url parameter')
+      setMessage('Error')
       return
     }
     attemptResolve(target, '')
@@ -39,6 +40,7 @@ export default function UserscriptPage() {
     if (!window.hcaptcha) return
     window.hcaptcha.render('hcaptcha-box', {
       sitekey: HCAPTCHA_SITEKEY,
+      theme: 'dark',
       callback: (token) => attemptResolve(target, token)
     })
   }
@@ -57,7 +59,7 @@ export default function UserscriptPage() {
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(text).then(() => {
         setCopied(true)
-        setTimeout(() => setCopied(false), 1500)
+        setTimeout(() => setCopied(false), 2000)
       }).catch(() => {
         fallbackCopy(text)
       })
@@ -76,7 +78,7 @@ export default function UserscriptPage() {
     try {
       document.execCommand('copy')
       setCopied(true)
-      setTimeout(() => setCopied(false), 1500)
+      setTimeout(() => setCopied(false), 2000)
     } catch (e) {
     }
     document.body.removeChild(ta)
@@ -87,8 +89,10 @@ export default function UserscriptPage() {
     setMessage('Resolving link…')
     setError('')
     setResultText('')
+    
     const headers = { Accept: 'application/json' }
     if (token) headers['x-hcaptcha-token'] = token
+    
     fetch(API_PROXY + encodeURIComponent(target), {
       method: 'GET',
       headers,
@@ -99,19 +103,21 @@ export default function UserscriptPage() {
         if (!json) {
           setStatus('error')
           setError('Invalid response')
+          setMessage('Error')
           return
         }
         if (json.status === 'success' && json.result) {
           if (isValidUrl(json.result)) {
             setMessage('Redirecting…')
+            setStatus('success')
             setTimeout(() => {
               window.location.href = json.result
-            }, 400)
+            }, 1000)
             return
           } else {
             setResultText(String(json.result))
             setStatus('result')
-            setMessage('Result')
+            setMessage('Bypass Complete!')
             return
           }
         }
@@ -125,202 +131,271 @@ export default function UserscriptPage() {
         }
         if (json.result && isValidUrl(json.result)) {
           setMessage('Redirecting…')
+          setStatus('success')
           setTimeout(() => {
             window.location.href = json.result
-          }, 400)
+          }, 1000)
           return
         }
         if (json.result) {
           setResultText(String(json.result))
           setStatus('result')
-          setMessage('Result')
+          setMessage('Bypass Complete!')
           return
         }
         setStatus('error')
+        setMessage('Error')
         setError(String(json.result || 'Unable to resolve'))
       })
       .catch(() => {
         setStatus('error')
+        setMessage('Error')
         setError('Network error')
       })
   }
 
   return (
-    <main className="us-root">
-      <div className="us-center">
-        <div className="us-logo" aria-hidden>
-          <img src={LOGO_SRC} alt="VortixWorld logo" className="us-logo-img" />
+    <div className="bh-root">
+      <div className="bh-header-bar">
+        <div className="bh-title">
+          <img src={LOGO_SRC} className="bh-header-icon" alt="Icon" />
+          VortixWorld
         </div>
-        <h1 className="us-title">VortixWorld</h1>
-        <p className="us-msg" id="us-message">{message}</p>
+      </div>
 
-        {status === 'loading' && <div className="us-spinner" aria-hidden />}
+      <div className="bh-main-content">
+        <img src={LOGO_SRC} className="bh-icon-img" alt="VortixWorld" />
+
+        {(status === 'loading' || status === 'init' || status === 'success') && (
+          <div className="bh-spinner-container">
+            <div className="bh-spinner-outer"></div>
+            <div className="bh-spinner-inner"></div>
+            <div className="bh-spinner-dot"></div>
+          </div>
+        )}
+
+        <div className="bh-status" style={{ color: status === 'error' ? '#ff6b7f' : status === 'result' ? '#4ade80' : '#fff' }}>
+            {message}
+        </div>
+        
+        {status === 'error' && <div className="bh-substatus">{error}</div>}
 
         {status === 'captcha' && (
-          <div className="us-captcha">
+          <div className="bh-captcha-container">
             <div id="hcaptcha-box" />
           </div>
         )}
 
         {status === 'result' && (
-          <div className="us-result" role="region" aria-label="Result">
-            <pre className="us-result-text" id="result-text">{resultText}</pre>
-            <button className="us-copy-btn" onClick={() => copyToClipboard(resultText)} aria-label="Copy result">
-              {copied ? 'Copied' : 'Copy'}
+          <div className="bh-result-area">
+            <input 
+                type="text" 
+                className="bh-input" 
+                readOnly 
+                value={resultText} 
+                onClick={(e) => e.target.select()}
+            />
+            <button className="bh-btn" onClick={() => copyToClipboard(resultText)}>
+              {copied ? '✅ Copied!' : '📋 Copy URL'}
             </button>
           </div>
         )}
-
-        {status === 'error' && <div className="us-error" role="alert">{error}</div>}
       </div>
 
-      <style>{`
-        html,body,#__next{
-          height:100%;
-          margin:0;
-          padding:0;
-          background-color:#071028;
-          background-image:none;
-          overflow-x:hidden;
+      <style jsx global>{`
+        html, body, #__next {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #020617, #000000);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+            color: #fff;
         }
-        .us-root{
-          min-height:100vh;
-          width:100vw;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          padding:env(safe-area-inset-top) 20px env(safe-area-inset-bottom);
-          background-color:#071028;
-          font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-          color:#ffffff;
-          text-align:center;
-          box-sizing:border-box;
-          overflow-x:hidden;
+
+        .bh-root {
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
-        .us-center{
-          width:100%;
-          max-width:520px;
-          display:flex;
-          flex-direction:column;
-          align-items:center;
-          gap:12px;
-          padding:18px;
-          box-sizing:border-box;
-          background-color:transparent;
+
+        .bh-header-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            padding: 0 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(2, 6, 23, 0.95);
+            border-bottom: 1px solid #1e293b;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            box-sizing: border-box;
         }
-        .us-logo{
-          width:140px;
-          height:140px;
-          display:flex;
-          align-items:center;
-          justify-content:center;
-          margin:0;
+
+        .bh-title {
+            font-weight: 800;
+            font-size: 24px;
+            color: #38bdf8;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
         }
-        .us-logo-img{
-          width:120px;
-          height:120px;
-          object-fit:contain;
-          display:block;
-          border-radius:12px;
-          image-rendering:auto;
+
+        .bh-header-icon {
+            height: 35px;
+            width: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #38bdf8;
         }
-        .us-title{
-          margin:0;
-          font-size:22px;
-          font-weight:800;
-          letter-spacing:0.3px;
+
+        .bh-main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            animation: bh-fade-in 0.6s ease-out;
+            position: relative;
+            z-index: 10;
+            margin-top: 60px;
         }
-        .us-msg{
-          margin:0;
-          font-size:15px;
-          opacity:0.95;
-          line-height:1.3;
+
+        .bh-icon-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            margin-bottom: 25px;
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.25);
+            object-fit: cover;
         }
-        .us-spinner{
-          width:46px;
-          height:46px;
-          margin-top:6px;
-          border-radius:50%;
-          border:4px solid rgba(255,255,255,0.18);
-          border-top-color:#ffffff;
-          animation:spin .9s linear infinite;
+
+        .bh-status {
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
-        .us-captcha{
-          width:100%;
-          display:flex;
-          justify-content:center;
-          margin-top:8px;
+
+        .bh-substatus {
+            font-size: 15px;
+            color: #94a3b8;
+            text-align: center;
+            margin-bottom: 15px;
         }
-        #hcaptcha-box{
-          width:100%;
-          max-width:420px;
+
+        .bh-spinner-container {
+            position: relative;
+            width: 60px;
+            height: 60px;
+            margin-bottom: 30px;
         }
-        .us-result{
-          width:100%;
-          margin-top:12px;
-          display:flex;
-          gap:10px;
-          align-items:center;
-          justify-content:space-between;
-          background:rgba(255,255,255,0.03);
-          border:1px solid rgba(255,255,255,0.04);
-          padding:12px;
-          border-radius:8px;
-          box-sizing:border-box;
-          backdrop-filter:blur(6px);
+        .bh-spinner-outer {
+            position: absolute;
+            width: 100%; height: 100%;
+            border: 4px solid transparent;
+            border-top: 4px solid #38bdf8;
+            border-right: 4px solid #38bdf8;
+            border-radius: 50%;
+            animation: bh-spin 1s linear infinite;
         }
-        .us-result-text{
-          margin:0;
-          padding:0;
-          font-size:14px;
-          color:#e6eef8;
-          text-align:left;
-          white-space:pre-wrap;
-          word-break:break-word;
-          flex:1 1 auto;
-          background:transparent;
-          border:0;
+        .bh-spinner-inner {
+            position: absolute;
+            top: 8px; left: 8px;
+            width: 44px; height: 44px;
+            border: 4px solid transparent;
+            border-bottom: 4px solid #7dd3fc;
+            border-left: 4px solid #7dd3fc;
+            border-radius: 50%;
+            animation: bh-spin-reverse 0.8s linear infinite;
         }
-        .us-copy-btn{
-          margin-left:12px;
-          flex:0 0 auto;
-          padding:8px 12px;
-          font-size:14px;
-          font-weight:700;
-          background:#0f63ff;
-          color:#fff;
-          border-radius:8px;
-          border:0;
-          cursor:pointer;
-          min-width:72px;
+        .bh-spinner-dot {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 10px; height: 10px;
+            background: #38bdf8;
+            border-radius: 50%;
+            animation: bh-pulse 1s ease-in-out infinite;
         }
-        .us-copy-btn:active{transform:scale(.98)}
-        .us-error{
-          margin-top:8px;
-          color:#ff6b7f;
-          font-weight:700;
-          font-size:14px;
+
+        .bh-captcha-container {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
         }
-        @keyframes spin{
-          to{transform:rotate(360deg)}
+
+        .bh-result-area {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 20px;
         }
-        @media (max-width:420px){
-          .us-title{font-size:20px}
-          .us-logo{width:112px;height:112px}
-          .us-logo-img{width:96px;height:96px}
-          .us-spinner{width:40px;height:40px;border-width:3px}
-          .us-center{padding:16px}
-          .us-result{flex-direction:column;align-items:stretch}
-          .us-copy-btn{width:100%;margin-left:0;margin-top:8px}
+
+        .bh-input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #38bdf8;
+            color: #7dd3fc;
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            font-family: monospace;
+            text-align: center;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.1);
+            box-sizing: border-box;
         }
-        @media (min-width:900px){
-          .us-root{padding:40px}
-          .us-center{max-width:640px;padding:28px}
-          .us-title{font-size:26px}
-          .us-logo{width:160px;height:160px}
-          .us-logo-img{width:136px;height:136px}
+
+        .bh-btn {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #fff;
+            border: none;
+            padding: 16px 20px;
+            border-radius: 8px;
+            font-weight: 800;
+            cursor: pointer;
+            width: 100%;
+            text-transform: uppercase;
+            transition: all 0.2s;
+            font-size: 15px;
+            letter-spacing: 1px;
+            box-shadow: 0 5px 20px rgba(14, 165, 233, 0.3);
+        }
+        .bh-btn:hover {
+            background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+            transform: translateY(-2px);
+        }
+        .bh-btn:active {
+            transform: scale(0.98);
+        }
+
+        @keyframes bh-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes bh-spin-reverse { 0% { transform: rotate(0deg); } 100% { transform: rotate(-360deg); } }
+        @keyframes bh-pulse { 0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 50% { opacity: 0.5; transform: translate(-50%, -50%) scale(0.8); } }
+        @keyframes bh-fade-in { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        @media (max-width: 480px) {
+            .bh-header-bar { padding: 0 15px; }
+            .bh-title { font-size: 18px; }
+            .bh-main-content { padding: 15px; }
         }
       `}</style>
-    </main>
+    </div>
   )
 }
