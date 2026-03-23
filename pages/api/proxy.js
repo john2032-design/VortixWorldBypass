@@ -14,7 +14,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ status: 'error', result: 'Missing url' })
   }
   try {
-    const target = 'https://site-dusky-chi.vercel.app/bypass?url=' + encodeURIComponent(url)
+    const target = 'https://lootlinkcom.vercel.app/bypass?url=' + encodeURIComponent(url)
     const forwardHeaders = {
       'x-site-token': SITE_SECRET,
       Origin: 'https://vortix-world-bypass.vercel.app',
