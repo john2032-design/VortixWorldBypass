@@ -94,26 +94,13 @@ export default function UserscriptPage() {
     document.body.removeChild(ta)
   }
 
-  function handleSuccessRedirect(url) {
-    const resultUrl = String(url)
-    const params = new URLSearchParams(window.location.search)
-    const returnUrl = params.get('return')
-
-    if (isLuarmorUrl(resultUrl) && returnUrl) {
-      setMessage('Returning to userscript…')
-      setStatus('success')
-      setTimeout(() => {
-        const sep = returnUrl.includes('?') ? '&' : '?'
-        window.location.href = `${returnUrl}${sep}redirect=${encodeURIComponent(resultUrl)}`
-      }, 800)
-      return
-    }
-
-    setMessage('Redirecting…')
+  function handleLuarmorRedirect(resultUrl, returnUrl) {
+    setMessage('Returning to userscript…')
     setStatus('success')
     setTimeout(() => {
-      window.location.href = resultUrl
-    }, 1000)
+      const sep = returnUrl.includes('?') ? '&' : '?'
+      window.location.href = `${returnUrl}${sep}redirect=${encodeURIComponent(resultUrl)}`
+    }, 800)
   }
 
   function attemptResolve(target, token) {
@@ -139,15 +126,21 @@ export default function UserscriptPage() {
           return
         }
         if (json.status === 'success' && json.result) {
-          if (isValidUrl(json.result)) {
-            handleSuccessRedirect(json.result)
-            return
-          } else {
-            setResultText(String(json.result))
-            setStatus('result')
-            setMessage('Bypass Complete!')
-            return
+          const final = String(json.result)
+          // Special case: if result is a luarmor URL and we have a return URL, redirect back
+          if (isLuarmorUrl(final)) {
+            const params = new URLSearchParams(window.location.search)
+            const returnUrl = params.get('return')
+            if (returnUrl) {
+              handleLuarmorRedirect(final, returnUrl)
+              return
+            }
           }
+          // For all other results (including non‑luarmor URLs), display in UI
+          setResultText(final)
+          setStatus('result')
+          setMessage('Bypass Complete!')
+          return
         }
         if (json.result && String(json.result).toLowerCase().includes('hcaptcha')) {
           setNeedsCaptcha(true)
@@ -155,10 +148,6 @@ export default function UserscriptPage() {
           setMessage('Complete captcha to continue')
           loadHCaptcha()
           setTimeout(() => renderHCaptcha(target), 300)
-          return
-        }
-        if (json.result && isValidUrl(json.result)) {
-          handleSuccessRedirect(json.result)
           return
         }
         if (json.result) {
