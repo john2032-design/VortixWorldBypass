@@ -1,19 +1,31 @@
-import HamburgerMenu from './HamburgerMenu'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export default function Header() {
   return (
     <header className="topbar">
       <div className="left">
-        <HamburgerMenu />
         <div className="brand">
-          <Image src="/BFB1896C-9FA4-4429-881A-38074322DFCB.png" alt="logo" width={52} height={52} className="logoimg" />
+          <Image
+            src="/BFB1896C-9FA4-4429-881A-38074322DFCB.png"
+            alt="logo"
+            width={52}
+            height={52}
+            className="logoimg"
+          />
           <div className="titling">
             <h1>VortixWorld Bypass</h1>
             <p className="muted">Sideload & Bypass</p>
           </div>
         </div>
       </div>
+
+      <nav className="nav-links">
+        <Link href="/" className="nav-link-btn">Home</Link>
+        <Link href="/supported" className="nav-link-btn">Supported</Link>
+        <Link href="/tos" className="nav-link-btn">TOS</Link>
+        <Link href="/privacy" className="nav-link-btn">Privacy</Link>
+      </nav>
 
       <div className="right">
         <a
