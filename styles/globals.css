@@ -1,8 +1,10 @@
 :root {
   --bg-radial-start: #0f172a;
   --bg-radial-end: #030614;
-  --accent: #3b82f6;
-  --accent-light: #60a5fa;
+  --blue: #2563eb;
+  --blue-light: #3b82f6;
+  --orange: #f97316;
+  --orange-dark: #ea580c;
   --card-bg: rgba(15, 23, 42, 0.6);
   --card-border: rgba(59, 130, 246, 0.3);
   --text: #e2e8f0;
@@ -53,7 +55,7 @@ body {
   background: rgba(15, 23, 42, 0.7);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(59, 130, 246, 0.3);
+  border-bottom: 1px solid var(--card-border);
   border-radius: 0 0 20px 20px;
   position: sticky;
   top: 0;
@@ -72,15 +74,15 @@ body {
 }
 
 .hamburger-btn {
-  width: 44px;
-  height: 40px;
+  width: 48px;
+  height: 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
-  padding: 6px;
-  border-radius: 24px;
+  gap: 5px;
+  padding: 0;
+  border-radius: 12px;
   background: rgba(30, 41, 59, 0.6);
   border: 1px solid rgba(59, 130, 246, 0.3);
   cursor: pointer;
@@ -88,12 +90,12 @@ body {
 }
 
 .hamburger-btn:active {
-  transform: scale(0.98);
+  transform: scale(0.96);
 }
 
 .hamburger-btn .bar {
   display: block;
-  width: 20px;
+  width: 24px;
   height: 2px;
   background: var(--text);
   border-radius: 2px;
@@ -101,24 +103,24 @@ body {
 }
 
 .hamburger-btn.open .top {
-  transform: translateY(6px) rotate(45deg);
+  transform: translateY(7px) rotate(45deg);
 }
 .hamburger-btn.open .mid {
   opacity: 0;
 }
 .hamburger-btn.open .bot {
-  transform: translateY(-6px) rotate(-45deg);
+  transform: translateY(-7px) rotate(-45deg);
 }
 
 .hamburger-nav {
   position: absolute;
   left: 0;
-  top: 54px;
+  top: 58px;
   background: rgba(15, 23, 42, 0.92);
   backdrop-filter: blur(12px);
   border-radius: 20px;
   padding: 12px;
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  border: 1px solid var(--card-border);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -140,17 +142,20 @@ body {
 .nav-link {
   color: var(--text);
   text-decoration: none;
-  padding: 10px 14px;
+  padding: 12px 16px;
   border-radius: 40px;
   display: block;
   transition: background 0.2s, color 0.2s;
   font-weight: 600;
   font-size: 14px;
+  background: rgba(30, 41, 59, 0.6);
+  border: 1px solid transparent;
 }
 
 .nav-link:hover {
-  background: rgba(59, 130, 246, 0.2);
-  color: var(--accent);
+  background: var(--orange);
+  color: white;
+  border-color: var(--orange);
 }
 
 .hamburger-overlay {
@@ -165,9 +170,9 @@ body {
   .hamburger-nav {
     left: 8px;
     right: 8px;
-    top: 72px;
+    top: 68px;
     min-width: auto;
-    padding: 14px;
+    padding: 12px;
   }
 }
 
@@ -179,7 +184,7 @@ body {
 
 .logoimg {
   border-radius: 50%;
-  border: 2px solid var(--accent);
+  border: 2px solid var(--blue);
   object-fit: cover;
   background: rgba(0, 0, 0, 0.2);
 }
@@ -188,7 +193,7 @@ body {
   margin: 0;
   font-size: 22px;
   font-weight: 900;
-  color: var(--accent);
+  color: var(--blue-light);
 }
 
 .titling .muted {
@@ -219,8 +224,8 @@ body {
 }
 
 .userscript-btn:hover {
-  background: var(--accent);
-  border-color: var(--accent);
+  background: var(--orange);
+  border-color: var(--orange);
   transform: translateY(-1px);
 }
 
@@ -278,8 +283,8 @@ body {
 }
 
 .input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 .hcaptcha-wrap {
@@ -297,7 +302,7 @@ body {
 }
 
 .btn {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  background: var(--blue);
   color: white;
   padding: 12px 24px;
   border-radius: 40px;
@@ -312,7 +317,7 @@ body {
 }
 
 .btn:hover {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
+  background: var(--orange);
   transform: translateY(-1px);
 }
 
@@ -355,7 +360,7 @@ body {
   padding: 20px;
   border-radius: 24px;
   background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(59, 130, 246, 0.2);
+  border: 1px solid var(--card-border);
 }
 
 .result-head {
@@ -430,7 +435,7 @@ body {
 }
 
 .action-btn:hover {
-  background: rgba(59, 130, 246, 0.6);
+  background: var(--orange);
   color: white;
 }
 
@@ -444,7 +449,7 @@ body {
 }
 
 .copied {
-  color: var(--accent);
+  color: var(--blue-light);
   font-size: 12px;
   margin-top: 4px;
 }
@@ -483,7 +488,7 @@ body {
 }
 
 .nav-back {
-  color: var(--accent);
+  color: var(--blue-light);
   text-decoration: none;
   font-weight: 600;
   display: inline-block;
@@ -492,6 +497,7 @@ body {
 
 .nav-back:hover {
   text-decoration: underline;
+  color: var(--orange);
 }
 
 .foot {
