@@ -10,10 +10,10 @@ export default function TOS() {
           <h2>Terms of Service</h2>
           <p><strong>Last updated:</strong> March 25, 2026</p>
 
-          <p>Welcome to VortixWorld Bypass. By using our website (vortix-world-bypass.vercel.app) or installing/using our userscript, you agree to comply with and be bound by the following terms and conditions. Please read them carefully.</p>
+          <p>Welcome to VortixWorld Bypass. By using our website (vortix-world-bypass.vercel.app) or installing and using our userscript, you agree to comply with and be bound by the following terms and conditions. Please read them carefully.</p>
 
           <h3>1. Acceptance of Terms</h3>
-          <p>Your access to and use of the VortixWorld Bypass website, API, and userscript (collectively, the "Service") constitutes acceptance of these Terms. If you do not agree, you may not use the Service.</p>
+          <p>Your access to and use of the VortixWorld Bypass website, API, and userscript (collectively, the “Service”) constitutes acceptance of these Terms. If you do not agree, you may not use the Service.</p>
 
           <h3>2. Description of Service</h3>
           <p>VortixWorld Bypass provides:</p>
@@ -22,7 +22,7 @@ export default function TOS() {
             <li>A userscript that automatically bypasses certain link shorteners, ad walls, and unlock mechanisms on supported websites.</li>
             <li>An API endpoint that processes bypass requests (used internally by the web interface and userscript).</li>
           </ul>
-          <p>The Service is provided "as is" and may be modified, limited, or discontinued at any time without notice.</p>
+          <p>The Service is provided “as is” and may be modified, limited, or discontinued at any time without notice.</p>
 
           <h3>3. User Obligations</h3>
           <p>You agree to use the Service only for lawful purposes. You shall not:</p>
@@ -40,7 +40,7 @@ export default function TOS() {
           <p>To the maximum extent permitted by law, VortixWorld Bypass shall not be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or related to your use of, or inability to use, the Service. We do not guarantee that the bypass will work for every link or that the results will be accurate.</p>
 
           <h3>6. Disclaimer of Warranties</h3>
-          <p>The Service is provided on an "AS IS" and "AS AVAILABLE" basis. We make no warranties, express or implied, regarding the operation or availability of the Service, or the accuracy, reliability, or completeness of any information provided.</p>
+          <p>The Service is provided on an “AS IS” and “AS AVAILABLE” basis. We make no warranties, express or implied, regarding the operation or availability of the Service, or the accuracy, reliability, or completeness of any information provided.</p>
 
           <h3>7. Changes to Terms</h3>
           <p>We reserve the right to update or modify these Terms at any time without prior notice. Your continued use of the Service after any changes constitutes acceptance of the new Terms.</p>
