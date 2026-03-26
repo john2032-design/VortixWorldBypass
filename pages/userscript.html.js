@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Head from 'next/head'
-import Header from '../components/Header'
 
 const API_PROXY = '/api/proxy?url='
 const HCAPTCHA_SITEKEY = process.env.NEXT_PUBLIC_HCAPTCHA_SITEKEY
@@ -188,13 +187,14 @@ export default function UserscriptPage() {
       </Head>
 
       <main className="page">
-        <Header />
-
         <section className="hero">
           <div className="card">
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-              <img src={LOGO_SRC} alt="VortixWorld" className="vw-icon-img" style={{ width: '80px', height: '80px' }} />
+            <div className="userscript-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '24px' }}>
+              <img src={LOGO_SRC} alt="VortixWorld" className="vw-icon-img" style={{ width: '48px', height: '48px' }} />
+              <div className="vw-title" style={{ fontSize: '20px', fontWeight: 'bold', color: '#3b82f6' }}>VortixWorld Bypass</div>
+            </div>
 
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
               {(status === 'loading' || status === 'init' || status === 'success') && (
                 <div className="vw-spinner" style={{ marginBottom: '20px' }}></div>
               )}
