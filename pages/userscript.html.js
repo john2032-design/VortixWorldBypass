@@ -186,58 +186,83 @@ export default function UserscriptPage() {
         <link rel="icon" href="/BFB1896C-9FA4-4429-881A-38074322DFCB.png" />
       </Head>
 
-      <main className="page">
-        <section className="hero">
-          <div className="card">
-            <div className="userscript-header" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '24px' }}>
-              <img src={LOGO_SRC} alt="VortixWorld" className="vw-icon-img" style={{ width: '48px', height: '48px' }} />
-              <div className="vw-title" style={{ fontSize: '20px', fontWeight: 'bold', color: '#3b82f6' }}>VortixWorld Bypass</div>
-            </div>
-
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '20px' }}>
-              {(status === 'loading' || status === 'init' || status === 'success') && (
-                <div className="vw-spinner" style={{ marginBottom: '20px' }}></div>
-              )}
-
-              <div className="vw-status" style={{ fontSize: '24px', fontWeight: 'bold' }}>
-                {message}
-              </div>
-
-              {status === 'error' && (
-                <div className="error" style={{ marginTop: '0' }}>
-                  {error}
-                </div>
-              )}
-
-              {status === 'captcha' && (
-                <div className="hcaptcha-wrap" style={{ marginTop: '20px' }}>
-                  <div id="hcaptcha-container"></div>
-                </div>
-              )}
-
-              {status === 'result' && (
-                <div className="result" style={{ width: '100%' }}>
-                  <div className="result-body">
-                    <pre className="result-pre">{resultText}</pre>
-                    <div className="result-actions">
-                      <button className="action-btn" onClick={() => copyToClipboard(resultText)}>
-                        {copied ? 'Copied!' : 'Copy URL'}
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
+      <div className="userscript-container">
+        <div className="card">
+          <div className="userscript-header">
+            <img src={LOGO_SRC} alt="VortixWorld" className="userscript-icon" />
+            <div className="userscript-title">VortixWorld Bypass</div>
           </div>
-        </section>
-      </main>
+
+          <div className="userscript-content">
+            {(status === 'loading' || status === 'init' || status === 'success') && (
+              <div className="vw-spinner"></div>
+            )}
+
+            <div className="vw-status">{message}</div>
+
+            {status === 'error' && <div className="error">{error}</div>}
+
+            {status === 'captcha' && (
+              <div className="hcaptcha-wrap">
+                <div id="hcaptcha-container"></div>
+              </div>
+            )}
+
+            {status === 'result' && (
+              <div className="result">
+                <pre className="result-pre">{resultText}</pre>
+                <button className="action-btn" onClick={() => copyToClipboard(resultText)}>
+                  {copied ? 'Copied!' : 'Copy URL'}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
       <style jsx>{`
-        .vw-icon-img {
+        .userscript-container {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+        }
+        .card {
+          width: 100%;
+          max-width: 600px;
+          background: rgba(15, 23, 42, 0.6);
+          backdrop-filter: blur(12px);
+          border-radius: 32px;
+          padding: 32px 24px;
+          border: 1px solid rgba(59, 130, 246, 0.3);
+          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+          text-align: center;
+        }
+        .userscript-header {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          margin-bottom: 28px;
+        }
+        .userscript-icon {
+          width: 48px;
+          height: 48px;
           border-radius: 50%;
           border: 2px solid #3b82f6;
           object-fit: cover;
-          background: rgba(0,0,0,0.2);
+        }
+        .userscript-title {
+          font-size: 22px;
+          font-weight: 800;
+          color: #3b82f6;
+        }
+        .userscript-content {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 20px;
         }
         .vw-spinner {
           width: 48px;
@@ -252,11 +277,49 @@ export default function UserscriptPage() {
           100% { transform: rotate(360deg); }
         }
         .vw-status {
+          font-size: 24px;
+          font-weight: 800;
           background: linear-gradient(135deg, #fff, #94a3b8);
           -webkit-background-clip: text;
           background-clip: text;
           color: transparent;
-          font-weight: 800;
+        }
+        .error {
+          color: #ef4444;
+          background: rgba(239,68,68,0.1);
+          padding: 8px 16px;
+          border-radius: 40px;
+          font-size: 14px;
+        }
+        .result {
+          width: 100%;
+          background: rgba(0,0,0,0.2);
+          border-radius: 20px;
+          padding: 16px;
+        }
+        .result-pre {
+          background: rgba(0,0,0,0.3);
+          padding: 12px;
+          border-radius: 16px;
+          font-family: monospace;
+          font-size: 13px;
+          color: #94a3b8;
+          word-break: break-all;
+          white-space: pre-wrap;
+          margin-bottom: 12px;
+        }
+        .action-btn {
+          background: #f97316;
+          color: white;
+          border: none;
+          padding: 10px 20px;
+          border-radius: 40px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .action-btn:hover {
+          background: #ea580c;
         }
       `}</style>
     </>
