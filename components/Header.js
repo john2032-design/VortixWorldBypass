@@ -18,7 +18,7 @@ export default function Header() {
       <div className="right">
         <a
           className="userscript-btn"
-          href="https://raw.githubusercontent.com/john2032-design/VortixWorld/refs/heads/main/Bypass.user.js"
+          href="https://vortixworlduserscript.vercel.app/raw/bypass.user.js"
           rel="noopener noreferrer"
           target="_blank"
         >
