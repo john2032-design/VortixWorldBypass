@@ -553,4 +553,9 @@ body {
   .card h2 {
     font-size: 18px;
   }
+
+  .hamburger-nav {
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+  }
 }
